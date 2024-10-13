@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dormitories.Migrations
 {
     [DbContext(typeof(DormitoriesDbContext))]
-    [Migration("20241012124813_intial2")]
-    partial class intial2
+    [Migration("20241013083206_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace Dormitories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DormitoriesId")
+                    b.Property<int?>("DormitoriesId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -64,7 +64,7 @@ namespace Dormitories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AnnouncementsId")
+                    b.Property<int?>("AnnouncementsId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ApplicationDate")
@@ -73,7 +73,7 @@ namespace Dormitories.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("StudentsId")
+                    b.Property<int?>("StudentsId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -93,6 +93,20 @@ namespace Dormitories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CurrentCapacity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxCapacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Dormitories");
@@ -106,7 +120,20 @@ namespace Dormitories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("DormitoriesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DormitoriesId");
 
                     b.ToTable("Students");
                 });
@@ -115,9 +142,7 @@ namespace Dormitories.Migrations
                 {
                     b.HasOne("Dormitories.Entities.Dormitories", "Dormitories")
                         .WithMany()
-                        .HasForeignKey("DormitoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DormitoriesId");
 
                     b.Navigation("Dormitories");
                 });
@@ -125,20 +150,35 @@ namespace Dormitories.Migrations
             modelBuilder.Entity("Dormitories.Entities.Applications", b =>
                 {
                     b.HasOne("Dormitories.Entities.Announcements", "Announcements")
-                        .WithMany()
-                        .HasForeignKey("AnnouncementsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Applications")
+                        .HasForeignKey("AnnouncementsId");
 
                     b.HasOne("Dormitories.Entities.Students", "Students")
-                        .WithMany()
-                        .HasForeignKey("StudentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Applications")
+                        .HasForeignKey("StudentsId");
 
                     b.Navigation("Announcements");
 
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("Dormitories.Entities.Students", b =>
+                {
+                    b.HasOne("Dormitories.Entities.Dormitories", "Dormitories")
+                        .WithMany()
+                        .HasForeignKey("DormitoriesId");
+
+                    b.Navigation("Dormitories");
+                });
+
+            modelBuilder.Entity("Dormitories.Entities.Announcements", b =>
+                {
+                    b.Navigation("Applications");
+                });
+
+            modelBuilder.Entity("Dormitories.Entities.Students", b =>
+                {
+                    b.Navigation("Applications");
                 });
 #pragma warning restore 612, 618
         }

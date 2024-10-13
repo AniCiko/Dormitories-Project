@@ -9,6 +9,6 @@
         public int CurrentCapacity { get; set; }
         public int MaxCapacity { get; set; }
 
-        public List<Students> StudentList = new List<Students>();
+        public List<Students>? StudentList = new List<Students>();
     }
 }
