@@ -22,7 +22,7 @@ namespace Dormitories.Controllers
         // GET: Announcements
         public async Task<IActionResult> Index()
         {
-            var dormitoriesDbContext = _context.Announcements.Include(a => a.Dormitories);
+            var dormitoriesDbContext = _context.Announcements.Include(a => a.Dormitories).Where( x => x.IsActive == true);
             return View(await dormitoriesDbContext.ToListAsync());
         }
 
@@ -59,6 +59,16 @@ namespace Dormitories.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DormitoriesId,Title,Description,PublishedDate,IsActive")] Announcements announcements)
         {
+            var list = _context.Announcements.Where(x => x.IsActive == true).ToList();
+            foreach(var a in list)
+            {
+                if (announcements.DormitoriesId == a.DormitoriesId && announcements.IsActive == true)
+                {
+                    return BadRequest("Ky dormitory ka nje announcement aktiv");
+                }
+            }
+
+
             if (ModelState.IsValid)
             {
                 _context.Add(announcements);

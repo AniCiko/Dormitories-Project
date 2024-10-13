@@ -61,6 +61,24 @@ namespace Dormitories.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,StudentsId,AnnouncementsId,ApplicationDate,IsActive")] Applications applications)
         {
+            var list = _context.Applications.Where(x => x.IsActive == true && x.AnnouncementsId == applications.AnnouncementsId).ToList();
+            foreach (var a in list)
+            {
+                if (applications.StudentsId == a.StudentsId && applications.IsActive == true)
+                {
+                    return BadRequest("Ju keni aplikuar nje here per kete announcement");
+                }
+            }
+
+            var listAnnouncement = _context.Announcements.Where(x => x.IsActive == false).ToList();
+            foreach(var a in listAnnouncement)
+            {
+                if(applications.AnnouncementsId == a.Id)
+                {
+                    return BadRequest("Announcementi per te cilin po aplikoni nuk eshte me aktiv.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(applications);

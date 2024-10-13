@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Dormitories.Entities.Announcements>
+﻿@using static Microsoft.EntityFrameworkCore.DbLoggerCategory
+@model IEnumerable<Dormitories.Entities.Announcements>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -9,6 +11,19 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@{
+    var selectListItems = new List<int>();
+
+    foreach (var i in Model)
+    {
+        selectListItems.Add(i.);
+    }
+}
+<dd class="col-sm-10">
+    @Html.DropDownListFor(model => model, new SelectList(selectListItems))
+</dd>
+
 <table class="table">
     <thead>
         <tr>
