@@ -23,6 +23,8 @@ namespace Dormitories.Controllers
         public async Task<IActionResult> Index()
         {
             var dormitoriesDbContext = _context.Announcements.Include(a => a.Dormitories).Where( x => x.IsActive == true);
+            var dormitories = await _context.Dormitories.ToListAsync();
+            ViewData["DormitoryList"] = new SelectList(dormitories, "Id", "Id");
             return View(await dormitoriesDbContext.ToListAsync());
         }
 
